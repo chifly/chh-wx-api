@@ -28,7 +28,7 @@ spring:
   redis:
     database: 0
     host: localhost
-    port: 6397
+    port: 6379
     password: abc123456
     jedis:
       pool:
@@ -36,6 +36,7 @@ spring:
         max-idle: 16
         max-wait: -1ms
         min-idle: 8
+    timeout: 5000ms
 
   data:
     mongodb:
@@ -68,3 +69,7 @@ emos:
     expire: 5
     #令牌缓存时间 day
     cache-expire: 10
+
+wx:
+  app-id: wxd445ef42ebbad349
+  app-secret: 5f06831977ba26037967c63cc8492f99
