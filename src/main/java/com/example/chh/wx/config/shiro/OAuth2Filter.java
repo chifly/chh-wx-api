@@ -79,15 +79,15 @@ public class OAuth2Filter extends AuthenticatingFilter {
     /**
      * shiro处理请求
      * 从请求头获得令牌字符串，判断是否过期，保存到Redis还有threadLocal中。
-     * @param servletRequest
-     * @param servletResponse
+     * @param request
+     * @param response
      * @return
      * @throws Exception
      */
     @Override
-    protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
-        HttpServletRequest req = (HttpServletRequest) servletRequest;
-        HttpServletResponse resp = (HttpServletResponse) servletResponse;
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        HttpServletRequest req= (HttpServletRequest) request;
+        HttpServletResponse resp= (HttpServletResponse) response;
         resp.setContentType("text/html");
         resp.setCharacterEncoding("UTF-8");
         resp.setHeader("Access-Control-Allow-Credentials", "true");
@@ -95,39 +95,34 @@ public class OAuth2Filter extends AuthenticatingFilter {
 
         threadLocalToken.clear();
 
-        String token = getRequestToken(req);
-        if (StrUtil.isBlank(token)) {
+        String token=getRequestToken(req);
+        if(StrUtil.isBlank(token)){
             resp.setStatus(HttpStatus.SC_UNAUTHORIZED);
-            resp.getWriter().print("无效的令牌");
+            resp.getWriter().print("空令牌" + token);
             return false;
         }
-        try {
+        try{
             jwtUtil.verifierToken(token);
-        } catch (TokenExpiredException e) {
-            //令牌过期
-            if (redisTemplate.hasKey(token)) {
-                //刷新令牌
+        }catch (TokenExpiredException e){
+            if(redisTemplate.hasKey(token)){
                 redisTemplate.delete(token);
-                int userId = jwtUtil.getUserId(token);
-                token = jwtUtil.createToken(userId);
-                redisTemplate.opsForValue().set(token, userId + "", cacheExpire, TimeUnit.DAYS);
+                int userId=jwtUtil.getUserId(token);
+                token=jwtUtil.createToken(userId);
+                redisTemplate.opsForValue().set(token,userId+"",cacheExpire, TimeUnit.DAYS);
                 threadLocalToken.setToken(token);
-            } else {
-                //服务端没有找到令牌，需要重新登陆
+            }
+            else{
                 resp.setStatus(HttpStatus.SC_UNAUTHORIZED);
-                resp.getWriter().print("过期令牌");
+                resp.getWriter().print("令牌已过期" + token);
                 return false;
             }
-        } catch (JWTDecodeException e) {
-            //字符串内容有问题
+        }catch (Exception e){
             resp.setStatus(HttpStatus.SC_UNAUTHORIZED);
-            resp.getWriter().print("无效令牌");
+            resp.getWriter().print("无效的令牌" + token);
             return false;
         }
-
-        boolean b = executeLogin(servletRequest, servletResponse);
-
-        return b;
+        boolean bool=executeLogin(request,response);
+        return bool;
     }
 
     /**

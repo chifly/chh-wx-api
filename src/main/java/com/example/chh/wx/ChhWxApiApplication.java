@@ -33,7 +33,7 @@ public class ChhWxApiApplication {
         for (SysConfig sysConfig : list) {
             String key = sysConfig.getParamKey();
             key = StrUtil.toCamelCase(key);
-            String value = sysConfig.getParamKey();
+            String value = sysConfig.getParamValue();
             try{
                 Field field = constants.getClass().getDeclaredField(key);
                 field.set(constants, value);

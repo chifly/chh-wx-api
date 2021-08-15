@@ -36,4 +36,11 @@ public interface TbUserDao {
      * @return
      */
     public Set<String> searchUserPermissions(int userId);
+
+    /**
+     * 查询用户表，返回一个用户
+     * @param userId
+     * @return
+     */
+    public TbUser searchById(int userId);
 }

@@ -1,5 +1,7 @@
 package com.example.chh.wx.service;
 
+import com.example.chh.wx.db.pojo.TbUser;
+
 import java.util.Set;
 
 /**
@@ -17,4 +19,6 @@ public interface UserService {
      * @return
      */
     public Integer login(String code);
+
+    public TbUser searchById(int userId);
 }
