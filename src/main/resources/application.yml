@@ -47,6 +47,12 @@ spring:
       username: root
       password: abc123456
 
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    username: leitan6988884@163.com
+    password: shuji0220..
+
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.example.chh.wx.db.pojo
@@ -70,6 +76,17 @@ emos:
     #令牌缓存时间 day
     cache-expire: 10
 
+  face:
+    createFaceModelUrl: http://192.168.2.6:3000/create_face_model
+    checkinUrl: http://192.168.2.6:3000/checkin
+
+  email:
+    system: leitan6988884@163.com
+    hr: 898170535@qq.com
+
+  image-folder: /Users/apple/Downloads/ImageFolder
+
+  code: HelloWorld
 wx:
   app-id: wxd445ef42ebbad349
   app-secret: 5f06831977ba26037967c63cc8492f99

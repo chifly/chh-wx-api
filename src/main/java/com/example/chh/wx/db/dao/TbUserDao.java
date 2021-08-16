@@ -43,4 +43,11 @@ public interface TbUserDao {
      * @return
      */
     public TbUser searchById(int userId);
+
+    /**
+     * 查找名字和等级
+     * @param userId
+     * @return
+     */
+    public HashMap searchNameAndDept(int userId);
 }
