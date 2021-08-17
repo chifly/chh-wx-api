@@ -50,4 +50,11 @@ public interface TbUserDao {
      * @return
      */
     public HashMap searchNameAndDept(int userId);
+
+    /**
+     * 根据用户id查询入职日期
+     * @param userId
+     * @return
+     */
+    public String searchUserHiredate(int userId);
 }
