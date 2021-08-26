@@ -1,12 +1,16 @@
 package com.example.chh.wx.service.Impl;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.example.chh.wx.db.dao.TbDeptDao;
 import com.example.chh.wx.db.dao.TbUserDao;
+import com.example.chh.wx.db.pojo.MessageEntity;
 import com.example.chh.wx.db.pojo.TbUser;
 import com.example.chh.wx.exception.EmosException;
 import com.example.chh.wx.service.UserService;
+import com.example.chh.wx.task.MessageTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author apple
@@ -34,6 +36,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TbUserDao userDao;
 
+    @Autowired
+    private MessageTask messageTask;
+
+    @Autowired
+    private TbDeptDao deptDao;
     /**
      * 获得临时用户凭证
      * @param code
@@ -72,6 +79,14 @@ public class UserServiceImpl implements UserService {
                 param.put("root", true);
                 userDao.insert(param);
                 int id = userDao.searchIdByOpenId(openId);
+
+                MessageEntity entity = new MessageEntity();
+                entity.setSenderId(0);
+                entity.setSenderName("系统消息");
+                entity.setUuid(IdUtil.simpleUUID());
+                entity.setMsg("你已经成功注册，请更新信息");
+                entity.setSendTime(new Date());
+                messageTask.sendAsync(id + "", entity);
                 return id;
             } else {
                 throw new EmosException("无法绑定管理账号");
@@ -90,12 +105,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer login(String code) {
-        String openId = getOpenId(code);
+        String openId = getOpenId(code) ;
         Integer id = userDao.searchIdByOpenId(openId);
         if (id == null) {
             throw new EmosException("用户不存在");
         }
         //TODO 从消息队列中接收数据，转移到消息表
+        messageTask.receiveAsync(id + "");
         return id;
     }
 
@@ -109,5 +125,47 @@ public class UserServiceImpl implements UserService {
     public String searchUserHiredate(int userId) {
         String hiredate = userDao.searchUserHiredate(userId);
         return hiredate;
+    }
+
+    @Override
+    public HashMap searchUserSummary(int userId) {
+        HashMap map = userDao.searchUserSummary(userId);
+        return map;
+    }
+
+    @Override
+    public ArrayList<HashMap> searchUserGroupByDept(String keyword) {
+        // list1保存部门数据， list2保存用户数据
+        ArrayList<HashMap> list_1=deptDao.searchDeptMembers(keyword);
+        ArrayList<HashMap> list_2=userDao.searchUserGroupByDept(keyword);
+        //把两个合并
+        for(HashMap map_1:list_1){
+            //得到部门ID
+            long deptId=(Long)map_1.get("id");
+            //部门里面的员工记录
+            ArrayList members=new ArrayList();
+            for(HashMap map_2:list_2){
+                //遍历每一个员工记录
+                long id=(Long) map_2.get("deptId");
+                //判断员工ID和部门id是否相同
+                if(deptId==id){
+                    members.add(map_2);
+                }
+            }
+            map_1.put("members",members);
+        }
+        return list_1;
+    }
+
+    @Override
+    public ArrayList<HashMap> searchMembers(List param) {
+        ArrayList<HashMap> results = userDao.searchMembers(param);
+        return results;
+    }
+
+    @Override
+    public List<HashMap> selectUserPhotoAndName(List param) {
+        List<HashMap> results = userDao.selectUserPhotoAndName(param);
+        return results;
     }
 }

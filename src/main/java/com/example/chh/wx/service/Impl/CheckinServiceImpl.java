@@ -288,6 +288,11 @@ public class CheckinServiceImpl implements CheckinService {
         return list;
     }
 
+    @Override
+    public ArrayList<HashMap> searchMonthCheckin(HashMap param) {
+        return this.searchWeekCheckin(param);
+    }
+
 //    @Override
 //    public HashMap searchTodayCheckin(int userId) {
 //        HashMap map=checkinDao.searchTodayCheckin(userId);

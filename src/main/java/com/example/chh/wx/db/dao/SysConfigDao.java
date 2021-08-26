@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+/**
+ * @author apple
+ */
 @Mapper
 public interface SysConfigDao {
     public List<SysConfig> selectAllParam();

@@ -20,5 +20,18 @@ public interface CheckinService {
 
     public HashMap searchTodayCheckin(int userId);
     public long searchCheckinDays(int userId);
+
+    /**
+     * 查询周数据
+     * @param param
+     * @return
+     */
     public ArrayList<HashMap> searchWeekCheckin(HashMap param);
+
+    /**
+     * 查询月数据
+     * @param param
+     * @return
+     */
+    public ArrayList<HashMap> searchMonthCheckin(HashMap param);
 }
