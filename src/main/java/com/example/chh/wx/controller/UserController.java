@@ -3,6 +3,7 @@ package com.example.chh.wx.controller;
 import cn.hutool.json.JSONUtil;
 import com.example.chh.wx.common.util.R;
 import com.example.chh.wx.config.shiro.JwtUtil;
+import com.example.chh.wx.config.tencent.TLSSigAPIv2;
 import com.example.chh.wx.controller.Form.*;
 import com.example.chh.wx.exception.EmosException;
 import com.example.chh.wx.service.UserService;
@@ -35,6 +36,15 @@ public class UserController {
 
     @Value("${emos.jwt.cache-expire}")
     private int cacheExpire;
+
+    @Value("${trtc.appid}")
+    private Integer appId;
+
+    @Value("${trtc.key}")
+    private String key;
+
+    @Value("${trtc.expire}")
+    private Integer expire;
 
     @PostMapping("/register")
     @ApiOperation("注册用户")
@@ -102,4 +112,19 @@ public class UserController {
         //返回数据
         return R.ok().put("result",list);
     }
+
+    @GetMapping("/genUserSig")
+    @ApiOperation("生成用户签名")
+    public R genUserSig(@RequestHeader("token") String token){
+        int id=jwtUtil.getUserId(token);
+        //得到用户email
+        String email=userService.searchMemberEmail(id);
+        //得到一个腾讯的 传入appID 和key
+        TLSSigAPIv2 api=new TLSSigAPIv2(appId, key);
+        //通过api获得用户签名
+        String userSig=api.genUserSig(email, expire);
+        //把签名和email放入返回对象
+        return R.ok().put("userSig",userSig).put("email",email);
+    }
+
 }

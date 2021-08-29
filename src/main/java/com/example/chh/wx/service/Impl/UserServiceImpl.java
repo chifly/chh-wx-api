@@ -168,4 +168,10 @@ public class UserServiceImpl implements UserService {
         List<HashMap> results = userDao.selectUserPhotoAndName(param);
         return results;
     }
+
+    @Override
+    public String searchMemberEmail(int id) {
+        String result = userDao.searchMemberEmail(id);
+        return result;
+    }
 }

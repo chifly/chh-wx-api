@@ -34,4 +34,6 @@ public interface UserService {
     public ArrayList<HashMap> searchMembers(List param);
 
     public List<HashMap> selectUserPhotoAndName(List param);
+
+    public String searchMemberEmail(int id);
 }

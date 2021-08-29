@@ -103,4 +103,11 @@ public interface TbUserDao {
      * @return
      */
     public List<HashMap> selectUserPhotoAndName(List param);
+
+    /**
+     * 根据用户ID查找email
+     * @param id
+     * @return
+     */
+    public String searchMemberEmail(int id);
 }
