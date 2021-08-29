@@ -15,8 +15,8 @@ spring:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/emos?useUnicode=true&characterEncoding=UTF-8
-      username: root
-      password: shuji0220
+      username: 
+      password: 
       initial-size: 4
       max-active: 8
       min-idle: 4
@@ -29,7 +29,7 @@ spring:
     database: 0
     host: localhost
     port: 6379
-    password: abc123456
+    password: 
     jedis:
       pool:
         max-active: 1000
@@ -45,13 +45,13 @@ spring:
       database: emos
       authentication-database: admin
       username: root
-      password: abc123456
+      password: 
 
   mail:
     default-encoding: UTF-8
     host: smtp.163.com
-    username: leitan6988884@163.com
-    password: VSVWUTGXPFGAFTMY
+    username: 
+    password: 
 
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
@@ -77,12 +77,12 @@ emos:
     cache-expire: 10
 
   face:
-    createFaceModelUrl: http://192.168.2.6:3000/create_face_model
-    checkinUrl: http://192.168.2.6:3000/checkin
+    createFaceModelUrl: 
+    checkinUrl: 
 
   email:
-    system: leitan6988884@163.com
-    hr: 898170535@qq.com
+    system: 
+    hr: 
 
   image-folder: /Users/apple/Downloads/ImageFolder
 
@@ -94,11 +94,11 @@ workflow:
   url: http://192.168.2.6:9090/emos-workflow
 
 trtc:
-  appid: 1400564236
-  key: 5b8d21c4061b380d4539cf905c1aebe3a094e1aacbdaf5e94508b7b5e3939490
+  appid: 
+  key: 
   #时间一天 24 * 3600
   expire: 86400
 
 wx:
-  app-id: wxd445ef42ebbad349
-  app-secret: 5f06831977ba26037967c63cc8492f99
+  app-id: 
+  app-secret: 
